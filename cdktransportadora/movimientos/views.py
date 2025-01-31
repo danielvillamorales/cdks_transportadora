@@ -108,7 +108,15 @@ def guardar_cajas(request):
 
 def generar_guia(traslado: EstadosTraslados, numero: int):
     lista = []
-    if traslado.numero_cajas_1 > 0:
+    cajas = [
+        (traslado.numero_cajas_1, "CAJA 1", 43, 36, 32, 12),
+        (traslado.numero_cajas_2, "CAJA 2", 43, 36, 66, 18),
+        (traslado.numero_cajas_3, "CAJA 3", 74, 36, 66, 25),
+        # Agrega más cajas si es necesario
+    ]
+    for numero_cajas, descripcion_caja, a, b, c, d in cajas:
+        if numero_cajas == 0:
+            continue
         lista.append(
             [
                 "",
@@ -122,85 +130,15 @@ def generar_guia(traslado: EstadosTraslados, numero: int):
                 traslado.traslado.departamento_destino,
                 traslado.traslado.telefono_bodega_destino,
                 "",
-                "CAJA 1",
+                descripcion_caja,
                 "CONFECCIONES",
                 "175000",
-                traslado.numero_cajas_1,
+                numero_cajas,
                 1,
-                43,
-                36,
-                32,
-                12,
-                6,
-                2,
-                1,
-                33307,
-                "",
-                numero,
-                "CM",
-                "KG",
-                "SER18794",
-                traslado.traslado.numero,
-            ]
-        )
-    if traslado.numero_cajas_2 > 0:
-        lista.append(
-            [
-                "",
-                "",
-                1,
-                0,
-                traslado.traslado.bodega_destino,
-                traslado.traslado.bodega_destino_desc,
-                traslado.traslado.bodega_destino_direccion,
-                traslado.traslado.ciudad_destino,
-                traslado.traslado.departamento_destino,
-                traslado.traslado.telefono_bodega_destino,
-                "",
-                "CAJA 2",
-                "CONFECCIONES",
-                "175000",
-                traslado.numero_cajas_2,
-                1,
-                43,
-                36,
-                66,
-                18,
-                6,
-                2,
-                1,
-                33307,
-                "",
-                numero,
-                "CM",
-                "KG",
-                "SER18794",
-                traslado.traslado.numero,
-            ]
-        )
-    if traslado.numero_cajas_3 > 0:
-        lista.append(
-            [
-                "",
-                "",
-                1,
-                0,
-                traslado.traslado.bodega_destino,
-                traslado.traslado.bodega_destino_desc,
-                traslado.traslado.bodega_destino_direccion,
-                traslado.traslado.ciudad_destino,
-                traslado.traslado.departamento_destino,
-                traslado.traslado.telefono_bodega_destino,
-                "",
-                "CAJA 3",
-                "CONFECCIONES",
-                "175000",
-                traslado.numero_cajas_3,
-                1,
-                74,
-                36,
-                66,
-                25,
+                a,
+                b,
+                c,
+                d,
                 6,
                 2,
                 1,
@@ -256,8 +194,8 @@ def generar_data_excel(estadostraslados):
     )
 
     # Agregar datos de los traslados actualizados
+    numero = 1
     for traslado in estadostraslados:
-        numero = 0
         guias = generar_guia(traslado, numero)
         if len(guias) > 0:
             numero += 1
