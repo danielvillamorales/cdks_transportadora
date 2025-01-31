@@ -2,9 +2,18 @@
 {% load static %}
 {% block content %}
 <div class="col-12">
-
-
-    <hr>
+    <div class="d-flex justify-content-between">
+        <h6 onclick="mostrar_ocultar()" style="cursor: pointer; color: rgb(56, 56, 144);" width="100">Historico Traslados ↓</h6>
+        <hr>
+    </div>
+    <form id="formexcelfechas" method="post" action="{% url 'descargar_excel_rango_fechas' %}" style="display: none;">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio" required>
+            <input type="date" class="form-control" name="fecha_fin" id="fecha_fin" required>
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Generar</button>
+        </div>
+    </form>
 </div>
 <div class="col-12">
     <form id="excelForm" method="post" action="{% url 'actualizar_cajas' %}">
@@ -80,6 +89,14 @@
             window.location.reload();
         }, 5000);
     };
-</script>
 
-{% endblock %}
+</script>
+<script>
+    function mostrar_ocultar() {
+        var form = document.getElementById("formexcelfechas"); 
+        if (form.style.display === "none") {
+            form.style.display = "block";
+        } else { form.style.display = "none"; }
+    } 
+    </script>
+    {% endblock %}

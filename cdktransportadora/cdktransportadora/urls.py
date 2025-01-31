@@ -22,6 +22,7 @@ from movimientos.views import (
     ver_traslados,
     guardar_cajas,
     ver_traslados_llenados,
+    descargar_excel_rango_fechas,
 )
 
 urlpatterns = [
@@ -32,4 +33,9 @@ urlpatterns = [
         "ver_traslados_llenados/", ver_traslados_llenados, name="ver_traslados_llenados"
     ),
     path("actualizar_cajas/", actualizar_cajas, name="actualizar_cajas"),
+    path(
+        "descargar_excel_rango_fechas/",
+        descargar_excel_rango_fechas,
+        name="descargar_excel_rango_fechas",
+    ),
 ]

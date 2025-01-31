@@ -13,9 +13,9 @@ def ver_traslados(request):
     if request.method == "POST":
         traslados = (
             Traslados.objects.filter(
-                bodega_origen=request.POST.get("bodega_origen"),
+                bodega_origen=request.POST.get("bodega_origen").upper(),
                 numero=request.POST.get("numero_traslado"),
-                documento_codigo=request.POST.get("tipo_documento"),
+                documento_codigo=request.POST.get("tipo_documento").upper(),
             )
             .exclude(id__in=EstadosTraslados.objects.values("traslado_id"))
             .order_by("fecha")
@@ -216,6 +216,66 @@ def generar_guia(traslado: EstadosTraslados, numero: int):
     return lista
 
 
+def generar_data_excel(estadostraslados):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Traslados Actualizados"
+    ws.append(
+        [
+            "# referencia",
+            "# guia",
+            "tiempo",
+            "generar sobreporte",
+            "doc identificacion",
+            "Nombre del Destinatario",
+            "Dirección",
+            "Ciudad/Cód DANE de destino",
+            "departamente",
+            "teléfono",
+            "celular",
+            "tipo caja",
+            "Dice Contener",
+            "Valor declarado",
+            "Número de Piezas",
+            "Cantidad",
+            "Alto",
+            "Ancho",
+            "Largo",
+            "Peso",
+            "Producto",
+            "Forma de Pago",
+            "Medio de Transporte",
+            "Campo personalizado 1",
+            "Generar Cajaporte",
+            "Identificador de Archivo Origen",
+            "Unidad de longitud",
+            "Unidad de peso",
+            "Codigo de Facturación",
+            "factura",
+        ]
+    )
+
+    # Agregar datos de los traslados actualizados
+    for traslado in estadostraslados:
+        numero = 0
+        guias = generar_guia(traslado, numero)
+        if len(guias) > 0:
+            numero += 1
+        for guia in guias:
+            ws.append(guia)
+
+        # Guardar el archivo en memoria
+    excel_file = BytesIO()
+    wb.save(excel_file)
+    excel_file.seek(0)
+
+    # Enviar el archivo como respuesta
+    response = HttpResponse(content_type="application/ms-excel")
+    response["Content-Disposition"] = "attachment; filename=traslados_generados.xlsx"
+    response.write(excel_file.getvalue())
+    return response
+
+
 def actualizar_cajas(request):
     if request.method == "POST":
         traslado_ids = request.POST.getlist("traslado_ids")
@@ -231,67 +291,19 @@ def actualizar_cajas(request):
         )
 
         # Crear el archivo Excel
-        wb = openpyxl.Workbook()
-        ws = wb.active
-        ws.title = "Traslados Actualizados"
+        return generar_data_excel(estadostraslados)
 
-        # Agregar encabezados
-        ws.append(
-            [
-                "# referencia",
-                "# guia",
-                "tiempo",
-                "generar sobreporte",
-                "doc identificacion",
-                "Nombre del Destinatario",
-                "Dirección",
-                "Ciudad/Cód DANE de destino",
-                "departamente",
-                "teléfono",
-                "celular",
-                "tipo caja",
-                "Dice Contener",
-                "Valor declarado",
-                "Número de Piezas",
-                "Cantidad",
-                "Alto",
-                "Ancho",
-                "Largo",
-                "Peso",
-                "Producto",
-                "Forma de Pago",
-                "Medio de Transporte",
-                "Campo personalizado 1",
-                "Generar Cajaporte",
-                "Identificador de Archivo Origen",
-                "Unidad de longitud",
-                "Unidad de peso",
-                "Codigo de Facturación",
-                "factura",
-            ]
+    return redirect("ver_traslados_llenados")
+
+
+def descargar_excel_rango_fechas(request):
+    if request.method == "POST":
+        fecha_inicio = request.POST.get("fecha_inicio")
+        fecha_fin = request.POST.get("fecha_fin")
+        estadostraslados = EstadosTraslados.objects.filter(
+            fecha_generado__gte=fecha_inicio, fecha_generado__lte=fecha_fin, estado=2
         )
-
-        # Agregar datos de los traslados actualizados
-        for traslado in estadostraslados:
-            numero = 0
-            guias = generar_guia(traslado, numero)
-            if len(guias) > 0:
-                numero += 1
-            for guia in guias:
-                ws.append(guia)
-
-        # Guardar el archivo en memoria
-        excel_file = BytesIO()
-        wb.save(excel_file)
-        excel_file.seek(0)
-
-        # Enviar el archivo como respuesta
-        response = HttpResponse(content_type="application/ms-excel")
-        response["Content-Disposition"] = (
-            "attachment; filename=traslados_generados.xlsx"
-        )
-        response.write(excel_file.getvalue())
-        return response
+        return generar_data_excel(estadostraslados)
 
     return redirect("ver_traslados_llenados")
 
