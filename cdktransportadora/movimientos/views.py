@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from datetime import date, timedelta
 from .models import Traslados, EstadosTraslados, Transportadoras
 from django.contrib import messages
 from django.db.models import Q, Sum, F
-
+from django.contrib.auth.models import Group, Permission, User
 import openpyxl
 from io import BytesIO
 
@@ -39,6 +39,10 @@ def ver_traslados(request):
 
 
 def ver_traslados_llenados(request):
+    user = get_object_or_404(User, username=request.user)
+    if not user.has_perm("transportadoras.generar_guias"):
+        messages.error(request, "No tiene permisos para ver esta página")
+        redirect("ver_traslados")
     transportadoras = Transportadoras.objects.all()
     traslados = EstadosTraslados.objects.filter(
         Q(fecha=date.today()) | Q(fecha_generado=date.today()) | Q(estado=1)

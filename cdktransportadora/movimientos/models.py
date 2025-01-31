@@ -60,6 +60,10 @@ class Transportadoras(models.Model):
     class Meta:
         db_table = "transportadoras"
         unique_together = (("descripcion", "codigo"),)
+        permissions = [
+            ("generar_guias", "generar_guias"),
+            ("ver_traslados", "ver_traslados"),
+        ]
 
     def __str__(self) -> str:
         return f"{self.descripcion} - {self.codigo}"
