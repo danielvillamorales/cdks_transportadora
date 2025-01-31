@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% load static %}
+{% block content %}
+<div class="col-12">
+
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="input-group">
+            <input required type="text" class="form-control" placeholder="Bodega Origen" name="bodega_origen"
+                id="bodega_origen">
+            <input required type="text" class="form-control" placeholder="tipo Documento" name="tipo_documento"
+                id="tipo_documento">
+            <input required type="number" class="form-control" placeholder="# traslado" name="numero_traslado"
+                id="numero_traslado">
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Buscar</button>
+        </div>
+    </form>
+
+
+    <hr>
+</div>
+<div class="col-12">
+
+    <table class="table table-sm table-striped table-hover table-outline-primary">
+        <thead class="table-info" style="font-size: 13px;">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Destino</th>
+                <th scope="col">Cajas</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for traslado in traslados %}
+            <tr style="font-size: 11px;">
+                <td>{{traslado.bodega_origen}}: {{traslado.documento_codigo}} {{traslado.numero}}</td>
+                <td>{{traslado.fecha}}</td>
+                <td>{{traslado.bodega_destino}} {{traslado.bodega_destino_desc}}
+                    <p style="color:rgb(92, 90, 90);font-size: 10px;">{{traslado.bodega_destino_direccion}}</p>
+                </td>
+                <form method="post" action="{% url 'guardar_cajas' %}">
+                    {% csrf_token %}
+                    <td>
+                        <input type="hidden" name="traslado_id" value="{{ traslado.id }}">
+                        <div class="input-group ">
+                            <div class="input-container ms-2">
+                                <label for="caja1">Caja 1</label>
+                                <div class="input-group ">
+                                    <input class="form-control" type="number" name="caja1_{{ traslado.id }}" min="0"
+                                        value="0" id="caja1_{{ traslado.id }}" placeholder="">
+                                </div>
+                            </div>
+                            <div class="input-container ms-2">
+                                <label for="caja2">Caja 2</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="number" name="caja2_{{ traslado.id }}" min="0"
+                                        value="0" id="caja2_{{ traslado.id }}" placeholder="">
+                                </div>
+                            </div>
+                            <div class="input-container ms-2">
+                                <label for="caja3">Caja 3</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="number" name="caja3_{{ traslado.id }}" min="0"
+                                        value="0" id="caja3_{{ traslado.id }}" placeholder="">
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <button style="font-size: 12px; margin-top:5%;" type="submit"
+                            class="btn btn-sm btn-outline-secondary">Guardar</button>
+                    </td>
+                </form>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+    function increment(id) {
+        var input = document.getElementById(id);
+        input.value = parseInt(input.value || 0) + 1;
+    }
+
+    function decrement(id) {
+        var input = document.getElementById(id);
+        input.value = parseInt(input.value || 0) - 1;
+    }
+</script>
+{% endblock %}
