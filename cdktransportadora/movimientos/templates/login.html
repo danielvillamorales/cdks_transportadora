@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Login</title>
+    <style>
+      .form {
+        padding: 5%;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        width: 70%;
+        background-color: aliceblue;
+        box-shadow: 0 0 10px 2px #053d5f;
+      }
+
+      .form-group {
+        margin-bottom: 1em;
+        justify-content: center;
+      }
+      h2 {
+        color: #053d5f;
+      }
+
+      label {
+        font-size: 1.2em;
+        display: block;
+        margin-bottom: -0.1em;
+        color: #053d5f72;
+      }
+
+      input {
+        width: 100%;
+        font-size: 20px;
+        padding: 5px;
+        border: 1px solid #053d5f;
+        border-radius: 5px;
+        color: #053d5f;
+        box-shadow: 0 0 5px 1px #053d5f;
+      }
+
+      .btn {
+        width: 90%;
+        padding: 8px;
+        border: 1px solid #053d5f;
+        border-radius: 5px;
+        font-size: 20px;
+        background-color: #053d5f18;
+        color: #053d5f;
+        cursor: pointer;
+        box-shadow: 0 0 5px 1px #053d5f;
+      }
+
+      .btn:hover {
+        background-color: #053d5f;
+        color: #f3f3f3;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="row">
+      <div
+        class="col-12"
+        style="
+          flex-wrap: wrap;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+        "
+      >
+        <form class="form" method="post">
+          <div>
+            <h2 style="text-align: center">Log in</h2>
+          </div>
+
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="username">Usuario</label>
+            {{ form.username }}
+
+            <label for="password" style="margin-top: 2%">Contraseña</label>
+            {{ form.password }}
+          </div>
+          <div style="display: flex; justify-content: center">
+            <button class="btn btn-outline-secondary" type="submit">
+              Entrar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

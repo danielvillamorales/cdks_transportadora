@@ -7,8 +7,10 @@ from django.db.models import Q, Sum, F
 from django.contrib.auth.models import Group, Permission, User
 import openpyxl
 from io import BytesIO
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def ver_traslados(request):
     if request.method == "POST":
         traslados = (
@@ -38,6 +40,7 @@ def ver_traslados(request):
     return render(request, "movimiento.html", {"traslados": traslados})
 
 
+@login_required
 def ver_traslados_llenados(request):
     user = get_object_or_404(User, username=request.user)
     if not user.has_perm("transportadoras.generar_guias"):

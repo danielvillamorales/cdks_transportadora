@@ -17,6 +17,9 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.auth.views import LoginView, LogoutView
 from movimientos.views import (
     actualizar_cajas,
     ver_traslados,
@@ -26,6 +29,15 @@ from movimientos.views import (
 )
 
 urlpatterns = [
+    path(
+        "accounts/login/", LoginView.as_view(template_name="login.html"), name="login"
+    ),
+    path("", LoginView.as_view(template_name="login.html"), name="login"),
+    path(
+        "accounts/logout/",
+        LogoutView.as_view(template_name="logout.html"),
+        name="logout",
+    ),
     path("admin/", admin.site.urls),
     path("traslados/", ver_traslados, name="ver_traslados"),
     path("guardar_cajas/", guardar_cajas, name="guardar_cajas"),
@@ -39,3 +51,5 @@ urlpatterns = [
         name="descargar_excel_rango_fechas",
     ),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
