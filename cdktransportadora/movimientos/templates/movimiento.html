@@ -127,6 +127,7 @@
               type="submit"
               class="btn btn-sm btn-outline-secondary"
               id="guardar-btn"
+              name="btn_{{traslado.id}}"
               disabled
             >
               Guardar
@@ -152,7 +153,6 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const inputs = document.querySelectorAll(".caja-input");
-    const button = document.getElementById("guardar-btn");
 
     inputs.forEach((input) => {
       input.addEventListener("input", function () {
@@ -162,6 +162,7 @@
             isAnyInputGreaterThanZero = true;
           }
         });
+        const button = input.closest("tr").querySelector("button");
         button.disabled = !isAnyInputGreaterThanZero;
       });
     });
