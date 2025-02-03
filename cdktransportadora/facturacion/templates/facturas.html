@@ -1,6 +1,6 @@
 {% extends "layout.html" %} {% load static %} {% block content %}
 <div class="col-12">
-  <h3 class="text-secondary text-center">Traslados</h3>
+  <h3 class="text-secondary text-center">Facturación</h3>
   <hr />
 </div>
 <div class="col-12">
@@ -9,27 +9,11 @@
     <div class="input-group">
       <input
         required
-        type="text"
-        class="form-control"
-        placeholder="Bodega Origen"
-        name="bodega_origen"
-        id="bodega_origen"
-      />
-      <input
-        required
-        type="text"
-        class="form-control"
-        placeholder="tipo Documento"
-        name="tipo_documento"
-        id="tipo_documento"
-      />
-      <input
-        required
         type="number"
         class="form-control"
-        placeholder="# traslado"
-        name="numero_traslado"
-        id="numero_traslado"
+        placeholder="# Factura"
+        name="numero_factura"
+        id="numero_factura"
       />
       <button
         class="btn btn-outline-secondary"
@@ -49,33 +33,30 @@
       <tr>
         <th scope="col">#</th>
         <th scope="col">Fecha</th>
-        <th scope="col">Destino</th>
+        <th scope="col">Cliente</th>
         <th scope="col">Cajas</th>
         <th scope="col">Acciones</th>
       </tr>
     </thead>
     <tbody>
-      {% for traslado in traslados %}
+      {% for factura in facturas %}
       <tr style="font-size: 11px">
+        <td>{{factura.factura}}</td>
+        <td>{{factura.fecha}}</td>
         <td>
-          {{traslado.bodega_origen}}: {{traslado.documento_codigo}}
-          {{traslado.numero}}
-        </td>
-        <td>{{traslado.fecha}}</td>
-        <td>
-          {{traslado.bodega_destino}} {{traslado.bodega_destino_desc}}
+          {{factura.nit}} - {{factura.tercero}}
           <p style="color: rgb(92, 90, 90); font-size: 10px">
-            {{traslado.bodega_destino_direccion}}
+            {{factura.direccion}} {{factura.ciudad}}
           </p>
         </td>
         <form
           method="post"
-          action="{% url 'guardar_cajas' %}"
-          onsubmit="return confirmSubmit({{traslado.numero}})"
+          action="{% url 'guardar_cajas_factura' %}"
+          onsubmit="return confirmSubmit({{factura.factura}})"
         >
           {% csrf_token %}
           <td>
-            <input type="hidden" name="traslado_id" value="{{ traslado.id }}" />
+            <input type="hidden" name="factura_id" value="{{ factura.id }}" />
             <div class="input-group">
               <div class="input-container ms-2">
                 <label for="caja1">Caja 1</label>
@@ -83,10 +64,10 @@
                   <input
                     class="form-control caja-input"
                     type="number"
-                    name="caja1_{{ traslado.id }}"
+                    name="caja1_{{ factura.id }}"
                     min="0"
                     value="0"
-                    id="caja1_{{ traslado.id }}"
+                    id="caja1_{{ factura.id }}"
                     placeholder=""
                   />
                 </div>
@@ -97,10 +78,10 @@
                   <input
                     class="form-control caja-input"
                     type="number"
-                    name="caja2_{{ traslado.id }}"
+                    name="caja2_{{ factura.id }}"
                     min="0"
                     value="0"
-                    id="caja2_{{ traslado.id }}"
+                    id="caja2_{{ factura.id }}"
                     placeholder=""
                   />
                 </div>
@@ -111,10 +92,10 @@
                   <input
                     class="form-control caja-input"
                     type="number"
-                    name="caja3_{{ traslado.id }}"
+                    name="caja3_{{ factura.id }}"
                     min="0"
                     value="0"
-                    id="caja3_{{ traslado.id }}"
+                    id="caja3_{{ factura.id }}"
                     placeholder=""
                   />
                 </div>
@@ -169,7 +150,7 @@
 
   function confirmSubmit(traslado) {
     return confirm(
-      `esta seguro de guardar las cajas para el traslado ${traslado}`
+      `esta seguro de guardar las cajas para la factura ${factura}`
     );
   }
 </script>

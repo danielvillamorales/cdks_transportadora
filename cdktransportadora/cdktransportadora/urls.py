@@ -27,6 +27,13 @@ from movimientos.views import (
     ver_traslados_llenados,
     descargar_excel_rango_fechas,
 )
+from facturacion.views import (
+    ver_facturas,
+    guardar_cajas_factura,
+    actualizar_cajas_facturas,
+    descargar_excel_rango_fechas_facturas,
+    ver_facturas_llenados,
+)
 
 urlpatterns = [
     path(
@@ -49,6 +56,23 @@ urlpatterns = [
         "descargar_excel_rango_fechas/",
         descargar_excel_rango_fechas,
         name="descargar_excel_rango_fechas",
+    ),
+    path("facturas/", ver_facturas, name="ver_facturas"),
+    path("guardar_cajas_factura/", guardar_cajas_factura, name="guardar_cajas_factura"),
+    path(
+        "actualizar_cajas_facturas/",
+        actualizar_cajas_facturas,
+        name="actualizar_cajas_facturas",
+    ),
+    path(
+        "descargar_excel_rango_fechas_facturas/",
+        descargar_excel_rango_fechas_facturas,
+        name="descargar_excel_rango_fechas_facturas",
+    ),
+    path(
+        "ver_facturas_llenadas/",
+        ver_facturas_llenados,
+        name="ver_facturas_llenadas",
     ),
 ]
 

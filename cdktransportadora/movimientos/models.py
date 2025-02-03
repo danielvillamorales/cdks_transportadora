@@ -49,6 +49,9 @@ class Traslados(models.Model):
             return ciudad[1].strip() if len(ciudad) > 1 else "NN"
         return "NN"
 
+    def __str__(self) -> str:
+        return f"{self.bodega_origen} - {self.bodega_destino} - {self.numero}"
+
 
 estados_traslados = ((0, "trasladado"), (1, "registrado"), (2, "generado"))
 

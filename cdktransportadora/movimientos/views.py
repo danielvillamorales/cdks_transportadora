@@ -7,7 +7,7 @@ from django.db.models import Q, Sum, F
 from django.contrib.auth.models import Group, Permission, User
 import openpyxl
 from io import BytesIO
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 
 
 @login_required
@@ -40,12 +40,11 @@ def ver_traslados(request):
     return render(request, "movimiento.html", {"traslados": traslados})
 
 
+@permission_required("movimientos.generar_guias", raise_exception=True)
 @login_required
 def ver_traslados_llenados(request):
     user = get_object_or_404(User, username=request.user)
-    if not user.has_perm("transportadoras.generar_guias"):
-        messages.error(request, "No tiene permisos para ver esta página")
-        redirect("ver_traslados")
+    print(user.user_permissions.all())
     transportadoras = Transportadoras.objects.all()
     traslados = EstadosTraslados.objects.filter(
         Q(fecha=date.today()) | Q(fecha_generado=date.today()) | Q(estado=1)

@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+{% load static %}
+{% block content %}
+<div class="col-12">
+    <div class="d-flex justify-content-between">
+        <h6 onclick="mostrar_ocultar()" style="cursor: pointer; color: rgb(56, 56, 144);" width="100">Historico Traslados ↓</h6>
+        <hr>
+    </div>
+    <form id="formexcelfechas" method="post" action="{% url 'descargar_excel_rango_fechas_facturas' %}" style="display: none;">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio" required>
+            <input type="date" class="form-control" name="fecha_fin" id="fecha_fin" required>
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Generar</button>
+        </div>
+    </form>
+</div>
+<div class="col-12">
+    <form id="excelForm" method="post" action="{% url 'actualizar_cajas_facturas' %}">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <select class="form-control" name="transportadora_id" id="transportadora_id" required>
+                {% for t in transportadoras %}
+                <option value="{{t.id}}">{{t.descripcion}}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Generar</button>
+        </div>
+
+        <table class="table table-sm table-striped table-hover table-outline-primary">
+            <thead class="table-info" style="font-size: 13px;">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Destino</th>
+                    <th scope="col">Cajas</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for factura in facturas %}
+                <tr style="font-size: 13px;">
+                    <td>{{factura.factura.numero}}
+                        <p style="color:rgb(92, 90, 90);font-size: 10px;">{{factura.factura.nit}}: {{factura.factura.tercero}}</p>
+                        <p style="color:rgb(94, 1, 1);font-size: 10px;">unidades: {{factura.factura.cantidad}}
+                    </td>
+
+                    </p>
+                    <td>{{factura.factura.fecha}}
+                        <p style="color:rgb(92, 90, 90);font-size: 10px;">fecha digitado: {{factura.fecha}}
+                        </p>
+                    </td>
+                    <td> {{factura.factura.direccion}}
+                        <p style="color:rgb(92, 90, 90);font-size: 10px;">{{factura.factura.ciudad}} - {{factura.factura.departamento}}
+                        </p>
+                    </td>
+                    <td>
+                        <span class="bg bg-primary text-light p-1 mt-1">C1:{{factura.numero_cajas_1}}</span>
+                        <span class="bg bg-secondary text-light p-1 mt-1">C2:{{factura.numero_cajas_2}}</span>
+                        <span class="bg bg-primary text-light p-1 mt-1">C3:{{factura.numero_cajas_3}}</span>
+                    </td>
+                    <td>
+                        {% if factura.estado == 1 %}
+                        <input style="font-size: 20px;" class="form-check-input" type="checkbox" name="factura_id"
+                            value="{{ factura.factura.id }}" id="{{factura.factura.id}}">
+                        {% else %}
+                        {{factura.trasportadora.descripcion}}
+                        <p style="color:rgb(92, 90, 90);font-size: 10px;">{{factura.fecha_generado}}
+                        </p>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+
+</div>
+<div class="fixed-bottom z-index bg bg-primary text-light p-2"
+    style="z-index: 1;display: flex; justify-content: space-around;"">
+    <span>Cajas Pendientes: {{total_cajas_estado_1_sum}}</span>
+    <span>Cajas Generadas: {{total_cajas_estado_2_sum}}</span>
+    <span>Cajas totales: {{total_general}}</span>
+</div>
+<script>
+    document.getElementById('excelForm').onsubmit = function () {
+        console.log('enviando');
+        setTimeout(function () {
+            window.location.reload();
+        }, 5000);
+    };
+
+</script>
+<script>
+    function mostrar_ocultar() {
+        var form = document.getElementById("formexcelfechas"); 
+        if (form.style.display === "none") {
+            form.style.display = "block";
+        } else { form.style.display = "none"; }
+    } 
+    </script>
+    {% endblock %}
