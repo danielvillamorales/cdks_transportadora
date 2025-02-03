@@ -19,7 +19,7 @@ def ver_facturas(request):
                 factura=request.POST.get("numero_factura"),
             )
             .exclude(id__in=EstadoFacturas.objects.values("factura"))
-            .order_by("fecha")
+            .order_by("-fecha")
         )
         if not facturas:
             messages.error(
