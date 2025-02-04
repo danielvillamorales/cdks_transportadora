@@ -1,0 +1,22 @@
+{% extends "layout.html" %} {% load static %} {% block content %}
+<div class="col-6 p-3 border rounded m-2">
+  <h6 class="text-secondary">Informe de facturas y traslados Por Rango De fechas</h6>
+  <form method="post">
+    {% csrf_token %}
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">Fecha Inicial</span>
+      <input type="date" class="form-control" placeholder="Fecha Inicial" aria-label="Username"
+        aria-describedby="basic-addon1" id="fecha_inicio" name="fecha_inicio">
+    </div>
+
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">Fecha Final</span>
+      <input type="date" class="form-control" placeholder="Fecha Final" aria-label="Username"
+        aria-describedby="basic-addon1" id="fecha_fin" name="fecha_fin">
+    </div>
+
+    <button class="btn btn-outline-primary mt-3" type="submit">Descargar</button>
+  </form>
+
+</div>
+{% endblock %}

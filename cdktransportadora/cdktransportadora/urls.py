@@ -33,6 +33,7 @@ from facturacion.views import (
     actualizar_cajas_facturas,
     descargar_excel_rango_fechas_facturas,
     ver_facturas_llenados,
+    informes,
 )
 
 urlpatterns = [
@@ -74,6 +75,7 @@ urlpatterns = [
         ver_facturas_llenados,
         name="ver_facturas_llenadas",
     ),
+    path("informes/", informes, name="informes"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

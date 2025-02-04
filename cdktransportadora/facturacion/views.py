@@ -9,6 +9,8 @@ from django.contrib.auth.models import Group, Permission, User
 import openpyxl
 from io import BytesIO
 from django.contrib.auth.decorators import login_required, permission_required
+from movimientos.models import EstadosTraslados
+from django.db.models import Value, CharField
 
 
 @login_required
@@ -246,3 +248,153 @@ def descargar_excel_rango_fechas_facturas(request):
 
 
 # Create your views here.
+
+
+def informes(request):
+    if request.method == "POST":
+        fecha_inicio = request.POST.get("fecha_inicio")
+        fecha_final = request.POST.get("fecha_fin")
+        facturas = (
+            EstadoFacturas.objects.filter(
+                fecha_generado__gte=fecha_inicio, fecha_generado__lte=fecha_final
+            )
+            .annotate(
+                tipo=Value("Factura", output_field=CharField()),
+                total_cajas=F("numero_cajas_1")
+                + F("numero_cajas_2")
+                + F("numero_cajas_3"),
+            )
+            .values(
+                "tipo",
+                "factura__factura",
+                "factura__fecha",
+                "factura__nit",
+                "factura__tercero",
+                "factura__ciudad",
+                "factura__direccion",
+                "trasportadora__descripcion",
+                "fecha_generado",
+                "numero_cajas_1",
+                "numero_cajas_2",
+                "numero_cajas_3",
+                "total_cajas",
+            )
+        )
+
+        traslados = (
+            EstadosTraslados.objects.filter(
+                fecha_generado__gte=fecha_inicio, fecha_generado__lte=fecha_final
+            )
+            .annotate(
+                tipo=Value("Factura", output_field=CharField()),
+                total_cajas=F("numero_cajas_1")
+                + F("numero_cajas_2")
+                + F("numero_cajas_3"),
+            )
+            .values(
+                "tipo",
+                "traslado__numero",
+                "traslado__fecha",
+                "traslado__bodega_destino",
+                "traslado__bodega_destino_desc",
+                "traslado__ciudad",
+                "traslado__bodega_destino_direccion",
+                "trasportadora__descripcion",
+                "fecha_generado",
+                "numero_cajas_1",
+                "numero_cajas_2",
+                "numero_cajas_3",
+                "total_cajas",
+            )
+        )
+        # print("facturas")
+        # validar_tipos(facturas)
+        # print("traslados")
+        # validar_tipos(traslados)
+        union = unir_data(facturas, traslados)
+        return descargar_historico_excel(union)
+
+    return render(request, "informes.html")
+
+
+def unir_data(facturas, traslados):
+    lista = []
+
+    for f in facturas:
+        lista.append(
+            [
+                f.get("tipo"),
+                f.get("factura__factura"),
+                f.get("factura__fecha"),
+                str(f.get("factura__nit")),
+                f.get("factura__tercero"),
+                f.get("factura__ciudad"),
+                f.get("factura__direccion"),
+                f.get("trasportadora__descripcion"),
+                f.get("fecha_generado"),
+                f.get("numero_cajas_1"),
+                f.get("numero_cajas_2"),
+                f.get("numero_cajas_3"),
+                f.get("total_cajas"),
+            ]
+        )
+    for t in traslados:
+        lista.append(
+            [
+                t.get("tipo"),
+                t.get("traslado__numero"),
+                t.get("traslado__fecha"),
+                t.get("traslado__bodega_destino"),
+                t.get("traslado__bodega_destino_desc"),
+                t.get("traslado__ciudad"),
+                t.get("traslado__bodega_destino_direccion"),
+                t.get("trasportadora__descripcion"),
+                t.get("fecha_generado"),
+                t.get("numero_cajas_1"),
+                t.get("numero_cajas_2"),
+                t.get("numero_cajas_3"),
+                t.get("total_cajas"),
+            ]
+        )
+    return lista
+
+
+def descargar_historico_excel(data):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    if ws is None:
+        return ValueError({"error": "no se pudo generar el excel"})
+    ws.title = "Informe De Facturas y Traslados Generados"
+    ws.append(
+        [
+            "tipo",
+            "numero",
+            "fecha",
+            "nit_o_bodega",
+            "tercero",
+            "ciudad",
+            "direccion",
+            "transportadora",
+            "fecha_generado",
+            "cajas_1",
+            "cajas_2",
+            "cajas_3",
+            "total_cajas",
+        ]
+    )
+    for d in data:
+        ws.append(d)
+    excel = BytesIO()
+    wb.save(excel)
+    response = HttpResponse(content_type="application/ms-excel")
+    response["Content-Disposition"] = (
+        "attachment; filename=Facturas_Traslados_Generados.xlsx"
+    )
+    response.write(excel.getvalue())
+    return response
+
+
+def validar_tipos(union):
+    for item in union:
+        for key, value in item.items():
+            print(f"Campo: {key}, Tipo: {type(value)}")
