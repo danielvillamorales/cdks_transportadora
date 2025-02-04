@@ -286,7 +286,7 @@ def informes(request):
                 fecha_generado__gte=fecha_inicio, fecha_generado__lte=fecha_final
             )
             .annotate(
-                tipo=Value("Factura", output_field=CharField()),
+                tipo=Value("Traslados", output_field=CharField()),
                 total_cajas=F("numero_cajas_1")
                 + F("numero_cajas_2")
                 + F("numero_cajas_3"),
