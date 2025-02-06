@@ -102,7 +102,7 @@ def guardar_cajas_factura(request):
         estado_traslado.save()
         messages.success(
             request,
-            f"Traslado {factura.tercero}: {factura.factura}  guardado correctamente",
+            f"Factura-> {factura.tercero}: {factura.factura}  guardado correctamente",
         )
         return redirect("ver_facturas")
 
@@ -129,7 +129,7 @@ def generar_guia(factura: EstadoFacturas, numero: int):
                 factura.factura.direccion,
                 factura.factura.ciudad,
                 factura.factura.departamento,
-                "",
+                factura.factura.telefono,
                 "",
                 descripcion_caja,
                 "CONFECCIONES",
@@ -143,7 +143,7 @@ def generar_guia(factura: EstadoFacturas, numero: int):
                 6,
                 2,
                 1,
-                33307,
+                factura.factura.centro_costo,
                 "",
                 numero,
                 "CM",

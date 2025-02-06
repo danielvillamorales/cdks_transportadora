@@ -15,6 +15,7 @@ class Traslados(models.Model):
     telefono_bodega_destino = models.CharField(max_length=12, blank=True, null=True)
     ciudad = models.CharField(max_length=50, blank=True, null=True)
     cantidad = models.FloatField(blank=True, null=True)
+    centro_costo = models.CharField(max_length=12, blank=True, null=True)
 
     class Meta:
         managed = False

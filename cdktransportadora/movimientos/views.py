@@ -144,7 +144,7 @@ def generar_guia(traslado: EstadosTraslados, numero: int):
                 6,
                 2,
                 1,
-                33307,
+                traslado.traslado.centro_costo,
                 "",
                 numero,
                 "CM",

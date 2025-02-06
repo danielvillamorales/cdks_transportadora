@@ -12,6 +12,8 @@ class Facturas(models.Model):
     ciudad = models.CharField(max_length=30, blank=True, null=True)
     departamento = models.CharField(max_length=30, blank=True, null=True)
     cantidad = models.FloatField(blank=True, null=True)
+    centro_costo = models.CharField(max_length=6, blank=True, null=True)
+    telefono = models.CharField(max_length=15, blank=True, null=True)
 
     class Meta:
         managed = False
