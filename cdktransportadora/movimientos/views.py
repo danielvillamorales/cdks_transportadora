@@ -46,9 +46,13 @@ def ver_traslados_llenados(request):
     user = get_object_or_404(User, username=request.user)
     print(user.user_permissions.all())
     transportadoras = Transportadoras.objects.all()
-    traslados = EstadosTraslados.objects.filter(
-        Q(fecha=date.today()) | Q(fecha_generado=date.today()) | Q(estado=1)
-    ).order_by("estado", "fecha", "traslado__bodega_destino")
+    traslados = (
+        EstadosTraslados.objects.filter(
+            Q(fecha=date.today()) | Q(fecha_generado=date.today()) | Q(estado=1)
+        )
+        .exclude(estado=3)
+        .order_by("estado", "fecha", "traslado__bodega_destino")
+    )
     total_cajas_estado_1 = traslados.filter(estado=1).aggregate(
         total_cajas_1=Sum("numero_cajas_1"),
         total_cajas_2=Sum("numero_cajas_2"),
