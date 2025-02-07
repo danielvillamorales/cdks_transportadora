@@ -55,10 +55,12 @@
                     <tr style="font-size: 13px;">
                         <td>{{traslado.traslado.bodega_origen}}: {{traslado.traslado.documento_codigo}}
                             {{traslado.traslado.numero}}
-                            <p style="color:rgb(94, 1, 1);font-size: 10px;">unidades: {{traslado.traslado.cantidad}}
+                            <p style="color:rgb(94, 1, 1);font-size: 10px;">unidades: {{traslado.traslado.cantidad}}</p>
+                            <a class="btn btn-sm btn-outline-danger" href="{% url 'cancelar_traslado' traslado.id %}"
+                                style="margin-top: -15px; font-size: 10px;">Cancelar</a>
                         </td>
 
-                        </p>
+
                         <td>{{traslado.traslado.fecha}}
                             <p style="color:rgb(92, 90, 90);font-size: 10px;">fecha digitado: {{traslado.fecha}}
                             </p>

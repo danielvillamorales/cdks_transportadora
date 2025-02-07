@@ -248,4 +248,15 @@ def descargar_excel_rango_fechas(request):
     return redirect("ver_traslados_llenados")
 
 
+def cancelar_traslado(request, id):
+    estado_traslado = EstadosTraslados.objects.get(id=id)
+    estado_traslado.estado = 3
+    estado_traslado.fecha_generado = None
+    estado_traslado.save()
+    messages.success(
+        request, f"Traslado {estado_traslado.traslado.numero} cancelado correctamente"
+    )
+    return redirect("ver_traslados_llenados")
+
+
 # Create your views here.

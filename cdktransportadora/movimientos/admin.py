@@ -18,6 +18,13 @@ class EstadosTrasladosAdmin(admin.ModelAdmin):
         "numero_cajas_2",
         "numero_cajas_3",
     ]
+    list_editable = [
+        "estado",
+        "trasportadora",
+        "numero_cajas_1",
+        "numero_cajas_2",
+        "numero_cajas_3",
+    ]
 
 
 # Register your models here.

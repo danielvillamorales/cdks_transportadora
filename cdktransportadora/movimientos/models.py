@@ -54,7 +54,12 @@ class Traslados(models.Model):
         return f"{self.bodega_origen} - {self.bodega_destino} - {self.numero}"
 
 
-estados_traslados = ((0, "trasladado"), (1, "registrado"), (2, "generado"))
+estados_traslados = (
+    (0, "trasladado"),
+    (1, "registrado"),
+    (2, "generado"),
+    (3, "anulado"),
+)
 
 
 class Transportadoras(models.Model):

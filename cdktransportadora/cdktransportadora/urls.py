@@ -26,6 +26,7 @@ from movimientos.views import (
     guardar_cajas,
     ver_traslados_llenados,
     descargar_excel_rango_fechas,
+    cancelar_traslado,
 )
 from facturacion.views import (
     ver_facturas,
@@ -58,6 +59,7 @@ urlpatterns = [
         descargar_excel_rango_fechas,
         name="descargar_excel_rango_fechas",
     ),
+    path("cancelar_traslado/<int:id>/", cancelar_traslado, name="cancelar_traslado"),
     path("facturas/", ver_facturas, name="ver_facturas"),
     path("guardar_cajas_factura/", guardar_cajas_factura, name="guardar_cajas_factura"),
     path(
